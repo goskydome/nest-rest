@@ -19,6 +19,7 @@ void setup() {
   else
     Serial.println(F("init failed"));
   client.dhcp();
+
   Serial.println(F("setup() done"));
 }
 
@@ -46,6 +47,7 @@ void loop() {
                        };
 
 
+      client.setHeader("Auth:xk2e2k245h5lsa");
       client.post("/data", message, &response);
 
       //if (!manager.sendtoWait(buf, 2, from)) {
