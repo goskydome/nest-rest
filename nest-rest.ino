@@ -47,7 +47,7 @@ void loop() {
                        };
 
 
-      client.setHeader("Auth:xk2e2k245h5lsa");
+      client.setHeader("Authorization: Token xk2e2k245h5lsa");
       client.post("/data", message, &response);
 
       //if (!manager.sendtoWait(buf, 2, from)) {
