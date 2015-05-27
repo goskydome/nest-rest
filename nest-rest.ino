@@ -33,12 +33,7 @@ void loop() {
     uint8_t from;
 
     if (manager.recvfromAck(buf, &len, &from)) {
-
-      Serial.println(from);
-      Serial.println(buf[0]);
-      Serial.println(buf[1]);
       response = "";
-
 
       char message[] = {'{', '"', 'i', 'd', '"', ':',   '"', 'a', 'b', 'c', 'd', 'e', 'f', 'g',   '"', ',', /*{"id":"abcdefg",*/
                         '"', 'f', 'r', 'o', 'm',   '"', ':',  '"', (from + 48),   '"', ',', /*"from":"1",*/
@@ -46,13 +41,8 @@ void loop() {
                         '"', 'v', 'a', 'l', 'u', 'e',   '"', ':',   '"', (buf[1] + 48),   '"', '}' /*"value":"0"*/
                        };
 
-
       client.setHeader("Authorization: Token xk2e2k245h5lsa");
-      client.post("/data", message, &response);
-
-      //if (!manager.sendtoWait(buf, 2, from)) {
-      //// alarm to a red led !!!
-      //}
+      int statusCode = client.post("/data", message, &response);
     }
   }
 }
