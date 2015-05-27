@@ -4,13 +4,13 @@
 #include <SPI.h>
 #include <UIPEthernet.h>
 #include "RestClient.h"
+#include <avr/pgmspace.h>
 
 #define SERVER_ADDRESS 0
 
 // Singleton instance of the radio
 RF22ReliableDatagram manager(SERVER_ADDRESS, 8, 0);
-RestClient client = RestClient("192.168.2.120");
-
+RestClient client = RestClient("192.168.2.120", 8080);
 
 void setup() {
   Serial.begin(9600);
@@ -25,22 +25,32 @@ void setup() {
 String response;
 void loop() {
 
+
   uint8_t buf[2] PROGMEM;
   if (manager.available()) {
     uint8_t len = 2;
     uint8_t from;
-    if (manager.recvfromAck(buf, &len, &from)) {
-      Serial.print(F("Received :"));
 
+    if (manager.recvfromAck(buf, &len, &from)) {
+
+      Serial.println(from);
+      Serial.println(buf[0]);
+      Serial.println(buf[1]);
       response = "";
-      int statusCode = client.post("/data", "POSTDATA", &response);
-      Serial.print(F("Status code from server: "));
-      Serial.println(statusCode);
-      Serial.print(F("Response body from server: "));
-      Serial.println(response);
-      if (!manager.sendtoWait(buf, 2, from)) {
-        //// alarm to a red led !!!
-      }
+
+
+      char message[] = {'{', '"', 'i', 'd', '"', ':',   '"', 'a', 'b', 'c', 'd', 'e', 'f', 'g',   '"', ',', /*{"id":"abcdefg",*/
+                        '"', 'f', 'r', 'o', 'm',   '"', ':',  '"', (from + 48),   '"', ',', /*"from":"1",*/
+                        '"', 't', 'y', 'p', 'e',   '"', ':',   '"', (buf[0] + 48),   '"', ',', /*"type":"7",*/
+                        '"', 'v', 'a', 'l', 'u', 'e',   '"', ':',   '"', (buf[1] + 48),   '"', '}' /*"value":"0"*/
+                       };
+
+
+      client.post("/data", message, &response);
+
+      //if (!manager.sendtoWait(buf, 2, from)) {
+      //// alarm to a red led !!!
+      //}
     }
   }
 }
