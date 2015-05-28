@@ -3,13 +3,11 @@
 #include <RF22.h>
 #include <SPI.h>
 #include <avr/pgmspace.h>
-
 #include <EtherCard.h>
 
+#define RF_SERVER_ADDRESS 0
 
-#define SERVER_ADDRESS 0
-
-RF22ReliableDatagram manager(SERVER_ADDRESS, 8, 0);
+RF22ReliableDatagram manager(RF_SERVER_ADDRESS, 8, 0);
 
 static byte mymac[] = { 0x74, 0x69, 0x69, 0x2D, 0x30, 0x31 };
 
