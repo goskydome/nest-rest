@@ -13,7 +13,8 @@ static byte mymac[] = { 0x74, 0x69, 0x69, 0x2D, 0x30, 0x31 };
 
 byte Ethernet::buffer[700];
 
-const char skydome[] PROGMEM = "api.skydome.io";
+//const char skydome[] PROGMEM = "api.skydome.io";
+const char skydome[] PROGMEM = "192.168.2.120";
 
 void setup() {
   Serial.begin(9600);
@@ -35,7 +36,7 @@ void setup() {
   Serial.println(F("setup() done"));
 }
 
-static void my_callback (byte statusCode, word off, word len) {
+static void responseCallback (byte statusCode, word off, word len) {
   Ethernet::buffer[off + 300] = 0;
   Serial.println((const char*) Ethernet::buffer + off);
 }
@@ -51,13 +52,12 @@ void loop() {
 
     if (manager.recvfromAck(buf, &len, &from)) {
 
-      const char message[] PROGMEM = {'{', '"', 'i', 'd', '"', ':',   '"', 'a', 'b', 'c', 'd', 'e', 'f', 'g',   '"', ',', /*{"id":"abcdefg",*/
-                                      '"', 'f', 'r', 'o', 'm',   '"', ':',  '"', (from + charOffset),   '"', ',', /*"from":"1",*/
-                                      '"', 't', 'y', 'p', 'e',   '"', ':',   '"', (buf[0] + charOffset),   '"', ',', /*"type":"7",*/
-                                      '"', 'v', 'a', 'l', 'u', 'e',   '"', ':',   '"', (buf[1] + charOffset),   '"', '}' /*"value":"0"*/
+      const char message[] PROGMEM = {'{','"', 'a', 'n', 't',            '"', ':', '"', (from + charOffset),   '"', ',', 
+                                          '"', 't', 'y', 'p', 'e',       '"', ':', '"', (buf[0] + charOffset), '"', ',', 
+                                          '"', 'v', 'a', 'l', 'u', 'e',  '"', ':', '"', (buf[1] + charOffset), '"', '}' 
                                      };
 
-      ether.httpPost(PSTR("/data"), skydome, PSTR("Authorization: Token asdaasd"), message, my_callback);
+      ether.httpPost(PSTR("/telemetry/plant/id/abcdefg"), skydome, PSTR("Authorization: Token asdaasd"), message, responseCallback);
     }
   }
 }
