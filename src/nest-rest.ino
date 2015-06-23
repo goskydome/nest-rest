@@ -45,16 +45,21 @@ const uint8_t charOffset PROGMEM = 48;
 void loop() {
   ether.packetLoop(ether.packetReceive());
 
-  uint8_t buf[2] PROGMEM;
+  uint8_t data[2] PROGMEM;
   if (manager.available()) {
     uint8_t len = 2;
     uint8_t from;
 
-    if (manager.recvfromAck(buf, &len, &from)) {
-
+    if (manager.recvfromAck(data, &len, &from)) {
+         
+      Serial.print("got data[0]:");
+      Serial.println(data[0]);
+        
+      Serial.print("got data[1]:");
+      Serial.println(data[1]);
       const char message[] PROGMEM = {'{','"', 'a', 'n', 't',            '"', ':', '"', (from + charOffset),   '"', ',', 
-                                          '"', 't', 'y', 'p', 'e',       '"', ':', '"', (buf[0] + charOffset), '"', ',', 
-                                          '"', 'v', 'a', 'l', 'u', 'e',  '"', ':', '"', (buf[1] + charOffset), '"', '}' 
+                                          '"', 't', 'y', 'p', 'e',       '"', ':', '"', (data[0] + charOffset), '"', ',', 
+                                          '"', 'v', 'a', 'l', 'u', 'e',  '"', ':', '"', (data[1] + charOffset), '"', '}' 
                                      };
 
       ether.httpPost(PSTR("/telemetry/plant/id/abcdefg"), skydome, PSTR("Authorization: Token asdaasd"), message, responseCallback);
