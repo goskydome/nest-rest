@@ -64,10 +64,9 @@ void loop() {
     char fromChar = from;
     char data0 = data[0];
     char data1 = data[1];
-       const char *message = '1323';
-    //  char message[] PROGMEM = {'{','"','a','"',':','"',from+charOffset,'"',',','"','t','"',':','"',data[0]+charOffset,'"',',',
-    //                                '"', 'v', '"',':','"',data[1]+charOffset,'"', '}' 
-    //                           };
+      char message[] PROGMEM = {'{','"','a','"',':','"',from+charOffset,'"',',','"','t','"',':','"',data[0]+charOffset,'"',',',
+                                    '"', 'v', '"',':','"',data[1]+charOffset,'"', '}' 
+                               };
     
       ether.httpPost(PSTR("/telemetry/plant/id/yaman"), skydome, PSTR("Authorization: Token asdaasd"), message, NULL);
     }
